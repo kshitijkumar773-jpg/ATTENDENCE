@@ -1,13 +1,16 @@
 import cv2
+import os
 from mtcnn import MTCNN
 from deepface import DeepFace
+from dotenv import load_dotenv
 from pymongo import MongoClient
 from scipy.spatial.distance import cosine
 import numpy as np
 import time
 
 # ----------------- MongoDB Setup -----------------
-MONGODB_URI = "mongodb+srv://Kamlesh-21:Guru2004@attendencesystem.nlapsic.mongodb.net/Attendencesystem?retryWrites=true&w=majority&appName=Attendencesystem"
+load_dotenv()
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
 client = MongoClient(MONGODB_URI)
 db = client['facerecognition_db']
 collection = db['users']

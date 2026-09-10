@@ -12,14 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-gray-900 text-gray-100 min-h-screen">
+    <html lang="en">
+      <body>
         {children}
         
-        {/* Footer */}
-        <footer className="bg-gray-800 text-gray-400 text-center py-4 mt-auto">
-          &copy; {new Date().getFullYear()} Face Recognition System. All rights reserved.
-        </footer>
       </body>
     </html>
   );

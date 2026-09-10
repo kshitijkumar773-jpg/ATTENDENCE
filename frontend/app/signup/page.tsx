@@ -9,6 +9,7 @@ import {
   User, 
   GraduationCap, 
   BookOpen,
+  IdCard,
   ArrowLeft,
   Home,
   LogIn
@@ -20,7 +21,8 @@ export default function SignUpPage() {
     username: "",
     email: "",
     password: "",
-    userType: "student"
+    userType: "student",
+    employeeId: ""
   });
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -156,6 +158,27 @@ export default function SignUpPage() {
                   />
                 </div>
               </div>
+
+              {/* Email Input */}
+              {formData.userType === "teacher" && (
+                <div>
+                  <label className="block text-slate-700 text-sm font-semibold mb-2">
+                    Employee ID
+                  </label>
+                  <div className="relative">
+                    <IdCard className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <input
+                      name="employeeId"
+                      type="text"
+                      placeholder="Enter your employee ID"
+                      required
+                      value={formData.employeeId}
+                      onChange={handleChange}
+                      className="w-full bg-white border-2 border-slate-200 rounded-xl pl-12 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-300"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Email Input */}
               <div>

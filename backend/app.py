@@ -6,6 +6,7 @@ import threading
 from flask import Flask
 from flask_cors import CORS
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
 from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
 import numpy as np
@@ -125,12 +126,10 @@ class ModelManager:
         except Exception as e:
             logger.error(f"❌ Model initialization failed: {e}")
             self.models_ready = False
-            raise e
+            logger.warning("Server will start without face-recognition models")
 
     def get_detector(self):
         """Get the MTCNN detector instance"""
-        if not self.models_ready:
-            raise RuntimeError("Models not properly initialized")
         return self.detector
 
     def is_ready(self):
@@ -170,6 +169,15 @@ model_manager = ModelManager()
 # Flask app
 app = Flask(__name__)
 CORS(app)
+
+
+@app.errorhandler(ServerSelectionTimeoutError)
+def mongodb_unavailable(error):
+    logger.error("MongoDB is unavailable: %s", error)
+    return {
+        "success": False,
+        "error": "Database unavailable. Start MongoDB and try again.",
+    }, 503
 
 # Configure Flask app with database and model instances
 app.config["DB"] = db
@@ -228,10 +236,8 @@ for rule in app.url_map.iter_rules():
 if __name__ == "__main__":
     logger.info("🚀 Starting Flask server...")
 
-    # Final model verification before starting
     if model_manager.is_ready():
         logger.info("🎯 All systems ready! Server starting on http://0.0.0.0:5000")
-        app.run(host="0.0.0.0", port=5000, debug=False)  # Set debug=False for production
     else:
-        logger.error("❌ Cannot start server - models not ready")
-        exit(1)
+        logger.warning("⚠️ Starting API server without face-recognition models")
+    app.run(host="0.0.0.0", port=5000, debug=False)
